@@ -6,9 +6,9 @@ pg.init()
 pg.display.set_caption("Grid Game")
 
 import constants as C
-import helper as H
 from player import PLAYER
 from grid import GRID
+from text import Text
 from data.configs import Colors, FontSize
 
 def quit():
@@ -21,7 +21,10 @@ def event_handler(event: pg.event.EventType):
         quit()
     if event.type == pg.KEYDOWN:
         if event.key == pg.K_ESCAPE:
-            quit()
+            PLAYER.pause = not PLAYER.pause
+
+    if PLAYER.pause:
+        return
             
 
     # Drag Across Screen
@@ -52,7 +55,6 @@ def draw_grid(surface: pg.Surface) -> None:
             pg.draw.rect(surface, Colors.BLACK, inner_rect)
 
 def main() -> None:
-    from text import Text
     while True:
         for event in pg.event.get(): event_handler(event)
  
@@ -63,11 +65,16 @@ def main() -> None:
         C.SCREEN.fill(Colors.BG_MAIN)
         draw_grid(C.SCREEN)
 
+        if PLAYER.pause:
+            t = Text(text= "PAUSED", color = Colors.WHITE, is_italic= True, font= C.FONTS[FontSize.XL6])
+            t.draw(C.SCREEN, (0,0))
 
-        t = Text(text= "12345678", color = Colors.WHITE, is_number_formatting= True, is_italic= True, font= C.FONTS[FontSize.XL6])
-        t.draw(C.SCREEN, (0,0))
+
+
+
         # Update
-        PLAYER.update_pos()
+        if not PLAYER.pause:
+            PLAYER.update_pos()
  
 if __name__ == "__main__":
     main()
