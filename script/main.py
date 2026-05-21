@@ -23,6 +23,9 @@ def event_handler(event: pg.event.EventType):
         if event.key == pg.K_ESCAPE:
             PLAYER.pause = not PLAYER.pause
 
+    if PLAYER.pause:
+        return
+            
     # PAUSE DEPENDANT EVENTS
     if PLAYER.pause:
         return
