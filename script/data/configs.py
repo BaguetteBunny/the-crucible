@@ -40,3 +40,4 @@ class FontSize(enum.Enum):
 
 class MenuLabel(enum.Enum):
     SIDEBAR = 0
+    SETTINGS = 1

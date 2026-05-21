@@ -32,7 +32,7 @@ class Text:
 
         self.rendered_images = [self.render_text(line) for line in self.text.split('\n')]
 
-    def draw(self, screen: pg.Surface, new_pos=None) -> None:
+    def draw(self, screen: pg.Surface = C.SCREEN, new_pos = None) -> None:
         x, y = new_pos or self.pos
         for img in self.rendered_images:
             chars = img if isinstance(img, list) else [img]

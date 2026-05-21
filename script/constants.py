@@ -8,7 +8,7 @@ screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 # Size Constants
 SCREEN_SIZE = pg.Vector2(screensize[0], screensize[1])
 SCREEN_SCALE = pg.Vector2(SCREEN_SIZE.x / 1920, SCREEN_SIZE.y / 1080)
-MIDPOINT = pg.Vector2(SCREEN_SIZE / 2)
+MIDPOINT = SCREEN_SIZE.elementwise() / 2
 
 # Main Constants
 FPS = 60
@@ -45,4 +45,5 @@ FONTS = {
 
 MENUS = {
     MenuLabel.SIDEBAR: pg.transform.scale_by(pg.image.load(MENU_PATH + "sidebar.png").convert_alpha(), SCREEN_SCALE.x),
+    MenuLabel.SETTINGS: pg.transform.scale_by(pg.image.load(MENU_PATH + "settings.png").convert_alpha(), SCREEN_SCALE.x),
 }

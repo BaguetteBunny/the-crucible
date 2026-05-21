@@ -1,13 +1,14 @@
 import pygame as pg
-import numpy as np
 import sys
 
 pg.init()
 pg.display.set_caption("Grid Game")
 
 import constants as C
+
 from player import PLAYER
 from grid import GRID
+from menu import SETTINGS, SIDEBAR
 from text import Text
 from data.configs import Colors, FontSize
 
@@ -23,15 +24,8 @@ def event_handler(event: pg.event.EventType):
         if event.key == pg.K_ESCAPE:
             PLAYER.pause = not PLAYER.pause
 
-    if PLAYER.pause:
-        return
-            
-    # PAUSE DEPENDANT EVENTS
-    if PLAYER.pause:
-        return
-            
     # Drag Across Screen
-    if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+    if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and not PLAYER.pause:
         PLAYER.dragging = True
         PLAYER.drag_start_mouse  = PLAYER.pos
         PLAYER.drag_start_camera = pg.Vector2(PLAYER.camera)
@@ -46,7 +40,7 @@ def event_handler(event: pg.event.EventType):
         PLAYER.camera.x = max(-C.MIDPOINT.x, min(C.MIDPOINT.x, PLAYER.camera.x))
         PLAYER.camera.y = max(-C.MIDPOINT.y, min(C.MIDPOINT.y, PLAYER.camera.y))
 
-def draw_grid(surface: pg.Surface) -> None:
+def draw_grid(surface: pg.Surface = C.SCREEN) -> None:
     for row in range(GRID.rows):
         for col in range(GRID.cols):
             loc = pg.Vector2(col, row) * GRID.cell_size + PLAYER.camera + GRID.origin
@@ -66,18 +60,19 @@ def main() -> None:
         
         # Draw
         C.SCREEN.fill(Colors.BG_MAIN)
-        draw_grid(C.SCREEN)
+        draw_grid()
 
         if PLAYER.pause:
             t = Text(text= "PAUSED", color = Colors.WHITE, is_italic= True, font= C.FONTS[FontSize.XL6])
             t.draw(C.SCREEN, (0,0))
 
+            SETTINGS.draw()
+
 
 
 
         # Update
-        if not PLAYER.pause:
-            PLAYER.update_pos()
+        PLAYER.update_pos()
  
 if __name__ == "__main__":
     main()
