@@ -9,6 +9,7 @@ import constants as C
 from player import PLAYER
 from grid import GRID
 from menu import SETTINGS, SIDEBAR
+from button import SETTINGS_BUTTON
 from text import Text
 from data.configs import Colors, FontSize
 
@@ -58,10 +59,14 @@ def main() -> None:
         pg.display.flip()
         C.CLOCK.tick(C.FPS)
         
-        # Draw
+        # Draw Screen
         C.SCREEN.fill(Colors.BG_MAIN)
         draw_grid()
 
+        # Draw Buttons
+        SETTINGS_BUTTON.draw()
+        
+        # Draw Settings
         if PLAYER.in_settings:
             t = Text(text= "PAUSED", color = Colors.WHITE, is_italic= True, font= C.FONTS[FontSize.XL6])
             t.draw(C.SCREEN, (0,0))
@@ -71,8 +76,12 @@ def main() -> None:
 
 
 
-        # Update
+        # Update Button
+        if SETTINGS_BUTTON.clicked(): PLAYER.in_settings = not PLAYER.in_settings
+
+        # Update Player
         PLAYER.update_pos()
+        PLAYER.update_clicks()
  
 if __name__ == "__main__":
     main()

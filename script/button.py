@@ -1,96 +1,98 @@
 import pygame as pg
-import time
-
 import constants as C
 from player import PLAYER
+from data.configs import IconLabel
+
 
 class Button:
     def __init__(self,
                  image: pg.Surface,
-                 pos: tuple[float, float] = (0.0, 0.0),
-                 click_side: tuple = (True, False),
-                 cd: float = 0.33,
+                 pos: pg.Vector2 = (0.0, 0.0),
+                 click_side: tuple[bool, bool] = (True, False),
+                 cd: int = 150,
                  animated: tuple[int, int] = (0, 0)) -> None:
-        
+
+        self.base_image = image
         self.image = image
         self.pos = pos
-        self.animated = None
-        self.rect = self.image.get_rect()
-        self.rect.topleft = self.pos
+        self.rect = self.image.get_rect(topleft=pos)
 
-        self.original_opacity = self.opacity = 1
-        self.hover = 1
+        self.opacity = 255
         self.cooldown = cd
-        self.left_click_enabled = True if click_side[0] or (not click_side[0] and not click_side[1]) else False
+        self.left_click_enabled = click_side[0] or not click_side[1]
         self.right_click_enabled = click_side[1]
         self.last_left_click_time = 0
         self.last_right_click_time = 0
 
-        if all(animated):
+        self.animated = None
+        if animated[0] > 0 and animated[1] > 0:
             self.animated = animated
-            self.animated_frames = self.animated[0]
-            self.animated_cd = self.animated[1]
-
-            self.current_frame = pg.time.get_ticks()
-            self.animation_list = []
-            size = self.image.get_height()
-            for frame in range(self.animated_frames):
-                current_frame = self.image.subsurface(frame*size, 0, size, size)
-                self.animation_list.append(pg.transform.smoothscale_by(current_frame, C.SCALE_X*2))
-            
+            self.animated_frames = animated[0]
+            self.animated_cd = animated[1]
+            self.current_frame_time = pg.time.get_ticks()
             self.frame = 0
-            self.image = self.animation_list[self.frame]
 
-    def draw(self, screen: pg.Surface, rescale: float | int | None = None, opacity: int = 255, rotation: float | int | None = None) -> None:
-        # Button Animation
+            size = image.get_height()
+            self.animation_list = [
+                pg.transform.smoothscale_by(image.subsurface(i * size, 0, size, size), C.SCALE_X * 2)
+                for i in range(self.animated_frames)
+            ]
+            self.base_image = self.animation_list[0]
+
+    def draw(self,
+             screen: pg.Surface = C.SCREEN,
+             rescale: float | None = None,
+             opacity: int = 255,
+             rotation: float | None = None) -> None:
+
         if self.animated:
+            now = pg.time.get_ticks()
+            if now - self.current_frame_time >= self.animated_cd:
+                self.frame = (self.frame + 1) % self.animated_frames
+                self.current_frame_time = now
             self.image = self.animation_list[self.frame]
-            if pg.time.get_ticks() - self.current_frame >= self.animated_cd:
-                self.frame = (self.frame+1)%self.animated_frames
-                self.current_frame = pg.time.get_ticks()
+        else:
+            self.image = self.base_image
 
-        # Dynamic Button Rescaling
-        if isinstance(rescale, (int, float)):
+        if rescale is not None:
             self.image = pg.transform.smoothscale_by(self.image, rescale)
-            self.rect = self.image.get_rect()
-            self.rect.center = self.pos
-        
-        # Dynamic Button Opacity
-        self.image.set_alpha(self.opacity)
-        if self.is_cooldownless():
-            self.opacity = opacity
 
-        # Dynamic Button Rotation
-        if rotation:
+        if rotation is not None:
             self.image = pg.transform.rotate(self.image, rotation)
-        
-        # Button Draw
+
+        self.rect = self.image.get_rect(center=self.pos)
+
+        if self.is_ready():
+            self.opacity = opacity
+        self.image.set_alpha(self.opacity)
+
         screen.blit(self.image, self.rect)
 
-    def clicked(self, click_opacity: float | int = 0) -> bool:
-        current_time = time.time()
-        
-        if self.left_click_enabled and PLAYER.left_clicked and self.rect.collidepoint(PLAYER.pos):
-            if self.is_cooldownless(current_time, self.last_left_click_time):
-                self.last_left_click_time = current_time
-                if isinstance(click_opacity, (int, float)):
-                    self.opacity = click_opacity
-                return True
+    def clicked(self, click_opacity: int = 200) -> bool:
+        if (self.left_click_enabled
+                and PLAYER.left_clicked
+                and self.rect.collidepoint(PLAYER.pos)
+                and self._click_ready(self.last_left_click_time)):
+            self.last_left_click_time = pg.time.get_ticks()
+            self.opacity = click_opacity
+            return True
 
-        if self.right_click_enabled and PLAYER.right_clicked and self.rect.collidepoint(PLAYER.pos):
-            if self.is_cooldownless(current_time, self.last_right_click_time):
-                self.last_right_click_time = current_time
-                if isinstance(click_opacity, (int, float)):
-                    self.opacity = click_opacity
-                return True
-    
+        if (self.right_click_enabled
+                and PLAYER.right_clicked
+                and self.rect.collidepoint(PLAYER.pos)
+                and self._click_ready(self.last_right_click_time)):
+            self.last_right_click_time = pg.time.get_ticks()
+            self.opacity = click_opacity
+            return True
+
         return False
-            
-    def is_cooldownless(self, current_time: float | None = None, click_type_time: float | None = None) -> bool:
-        if not current_time:
-            current_time = time.time()
 
-        if not click_type_time:
-            return (current_time - self.last_left_click_time >= self.cooldown) and (current_time - self.last_right_click_time >= self.cooldown) 
-        
-        return current_time - click_type_time >= self.cooldown
+    def is_ready(self) -> bool:
+        now = pg.time.get_ticks()
+        return (now - self.last_left_click_time >= self.cooldown and
+                now - self.last_right_click_time >= self.cooldown)
+
+    def _click_ready(self, last_click_time: int) -> bool:
+        return pg.time.get_ticks() - last_click_time >= self.cooldown
+    
+SETTINGS_BUTTON = Button(C.ICONS[IconLabel.TRIPLE_DOTS], (1860 * C.SCREEN_SCALE.x, 30 * C.SCREEN_SCALE.y))

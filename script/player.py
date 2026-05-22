@@ -8,6 +8,11 @@ class Player(pg.sprite.Sprite):
         self.drag_start_camera = pg.Vector2(0, 0)
         self.pos = pg.Vector2(0, 0)
 
+        self.left_clicked, self.right_clicked = False, False
+
+        self.name = ""
+        self.coins = 0
+
         self.in_settings = False
 
     def update_cursor(self, cursor: int = None) -> None:
@@ -20,6 +25,10 @@ class Player(pg.sprite.Sprite):
 
     def update_pos(self): 
         self.pos = pg.Vector2(pg.mouse.get_pos())
+
+    def update_clicks(self):
+        self.left_clicked = pg.mouse.get_pressed(num_buttons = 3)[0]
+        self.right_clicked = pg.mouse.get_pressed(num_buttons = 3)[2]
 
     def draw_stats(self): ... 
 
