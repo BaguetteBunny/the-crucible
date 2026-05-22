@@ -54,8 +54,6 @@ def draw_grid(surface: pg.Surface = C.SCREEN) -> None:
 
 def main() -> None:
     while True:
-        for event in pg.event.get(): event_handler(event)
- 
         pg.display.flip()
         C.CLOCK.tick(C.FPS)
         
@@ -63,15 +61,14 @@ def main() -> None:
         C.SCREEN.fill(Colors.BG_MAIN)
         draw_grid()
 
+        # Draw Menus
+        SIDEBAR.draw()
+
         # Draw Buttons
         SETTINGS_BUTTON.draw()
         
         # Draw Settings
-        if PLAYER.in_settings:
-            t = Text(text= "PAUSED", color = Colors.WHITE, is_italic= True, font= C.FONTS[FontSize.XL6])
-            t.draw(C.SCREEN, (0,0))
-
-            SETTINGS.draw()
+        if PLAYER.in_settings: SETTINGS.draw()
 
 
 
@@ -82,6 +79,9 @@ def main() -> None:
         # Update Player
         PLAYER.update_pos()
         PLAYER.update_clicks()
+
+        # Update Events
+        for event in pg.event.get(): event_handler(event)
  
 if __name__ == "__main__":
     main()
