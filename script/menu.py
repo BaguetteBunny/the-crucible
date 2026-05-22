@@ -23,4 +23,4 @@ class Settings(Menu):
 
 SIDEBAR = Sidebar(pg.Vector2(0, 0))
 
-SETTINGS = Settings(C.MIDPOINT - pg.Vector2(352, 320).elementwise() * C.SCREEN_SCALE)
+SETTINGS = Settings(C.MIDPOINT - pg.Vector2(352 * C.SCREEN_SCALE.x, 320 * C.SCREEN_SCALE.y))
