@@ -2,6 +2,7 @@ import pygame as pg
 import colorsys
 
 import constants as C
+from player import PLAYER
 from data.configs import RainbowConfig, FontSize, Colors
 
 class Text:
@@ -70,3 +71,9 @@ class Text:
             rgb = colorsys.hsv_to_rgb(hue / 360.0, 1, self.color.fixed_lightness / 100.0)
             yield [int(c * 255) for c in rgb]
             hue = (hue + self.color.hue_step) % 360
+
+PLAYER_NAME = Text(PLAYER.name, 
+                   C.FONTS[FontSize.L], 
+                   pos = pg.Vector2(224 * C.SCREEN_SCALE.x, 80 * C.SCREEN_SCALE.y), 
+                   is_centered = True,
+                   is_underline = True)

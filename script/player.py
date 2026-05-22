@@ -1,5 +1,7 @@
 import pygame as pg
 
+__valid_char__ = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
+
 class Player(pg.sprite.Sprite):
     def __init__(self) -> None:
         self.camera = pg.Vector2(0, 0)
@@ -10,7 +12,7 @@ class Player(pg.sprite.Sprite):
 
         self.left_clicked, self.right_clicked = False, False
 
-        self.name = ""
+        self.name = "ANONYMOUSSSSSSSS"
         self.coins = 0
 
         self.in_settings = False
@@ -29,6 +31,13 @@ class Player(pg.sprite.Sprite):
     def update_clicks(self):
         self.left_clicked = pg.mouse.get_pressed(num_buttons = 3)[0]
         self.right_clicked = pg.mouse.get_pressed(num_buttons = 3)[2]
+
+    def is_valid_name(name: str) -> bool:
+        if len(name) > 16: return False
+        for char in name:
+            if char not in __valid_char__:
+                return False
+        return True
 
     def draw_stats(self): ... 
 

@@ -10,7 +10,7 @@ from player import PLAYER
 from grid import GRID
 from menu import SETTINGS, SIDEBAR
 from button import SETTINGS_BUTTON
-from text import Text
+from text import PLAYER_NAME
 from data.configs import Colors, FontSize
 
 def quit():
@@ -66,6 +66,9 @@ def main() -> None:
 
         # Draw Buttons
         SETTINGS_BUTTON.draw()
+
+        # Draw Text
+        PLAYER_NAME.draw()
         
         # Draw Settings
         if PLAYER.in_settings: SETTINGS.draw()
