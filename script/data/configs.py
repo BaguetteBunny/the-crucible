@@ -41,3 +41,11 @@ class FontSize(enum.Enum):
 class MenuLabel(enum.Enum):
     SIDEBAR = 0
     SETTINGS = 1
+
+class IconLabel(enum.Enum):
+    COIN = 0
+    HEART = 1
+    TRIPLE_DOTS = 2
+    SPEAKER = 3
+    MUTED_SPEAKER = 4
+    STAR = 5

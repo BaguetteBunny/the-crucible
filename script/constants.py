@@ -1,6 +1,6 @@
 import ctypes
 import pygame as pg
-from data.configs import FontSize, MenuLabel
+from data.configs import FontSize, MenuLabel, IconLabel
 
 user32 = ctypes.windll.user32
 screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
@@ -23,6 +23,7 @@ ASSETS_PATH = "./assets/"
 FONTS_PATH = ASSETS_PATH + "./fonts/"
 MENU_PATH = ASSETS_PATH + "./menu/"
 TOOLS_PATH = ASSETS_PATH + "./tools/"
+ICONS_PATH = ASSETS_PATH + "./icons/"
 
 # Asset Constants
 FONTS = {
@@ -46,4 +47,13 @@ FONTS = {
 MENUS = {
     MenuLabel.SIDEBAR: pg.transform.scale_by(pg.image.load(MENU_PATH + "sidebar.png").convert_alpha(), SCREEN_SCALE.x),
     MenuLabel.SETTINGS: pg.transform.scale_by(pg.image.load(MENU_PATH + "settings.png").convert_alpha(), SCREEN_SCALE.x),
+}
+
+ICONS = {
+    IconLabel.COIN: pg.transform.scale_by(pg.image.load(ICONS_PATH + "coin.png").convert_alpha(), SCREEN_SCALE.x),
+    IconLabel.HEART: pg.transform.scale_by(pg.image.load(ICONS_PATH + "heart.png").convert_alpha(), SCREEN_SCALE.x),
+    IconLabel.MUTED_SPEAKER: pg.transform.scale_by(pg.image.load(ICONS_PATH + "speaker-crossed.png").convert_alpha(), SCREEN_SCALE.x),
+    IconLabel.SPEAKER: pg.transform.scale_by(pg.image.load(ICONS_PATH + "speaker.png").convert_alpha(), SCREEN_SCALE.x),
+    IconLabel.TRIPLE_DOTS: pg.transform.scale_by(pg.image.load(ICONS_PATH + "3-dots.png").convert_alpha(), SCREEN_SCALE.x),
+    IconLabel.STAR: pg.transform.scale_by(pg.image.load(ICONS_PATH + "star.png").convert_alpha(), SCREEN_SCALE.x),
 }
