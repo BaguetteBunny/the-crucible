@@ -8,7 +8,7 @@ class Player(pg.sprite.Sprite):
         self.drag_start_camera = pg.Vector2(0, 0)
         self.pos = pg.Vector2(0, 0)
 
-        self.pause = False
+        self.in_settings = False
 
     def update_cursor(self, cursor: int = None) -> None:
         if self.dragging:

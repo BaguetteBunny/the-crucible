@@ -22,10 +22,10 @@ def event_handler(event: pg.event.EventType):
         quit()
     if event.type == pg.KEYDOWN:
         if event.key == pg.K_ESCAPE:
-            PLAYER.pause = not PLAYER.pause
+            PLAYER.in_settings = not PLAYER.in_settings
 
     # Drag Across Screen
-    if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and not PLAYER.pause:
+    if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and not PLAYER.in_settings:
         PLAYER.dragging = True
         PLAYER.drag_start_mouse  = PLAYER.pos
         PLAYER.drag_start_camera = pg.Vector2(PLAYER.camera)
@@ -62,7 +62,7 @@ def main() -> None:
         C.SCREEN.fill(Colors.BG_MAIN)
         draw_grid()
 
-        if PLAYER.pause:
+        if PLAYER.in_settings:
             t = Text(text= "PAUSED", color = Colors.WHITE, is_italic= True, font= C.FONTS[FontSize.XL6])
             t.draw(C.SCREEN, (0,0))
 
